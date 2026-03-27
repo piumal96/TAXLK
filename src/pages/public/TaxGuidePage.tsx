@@ -14,8 +14,8 @@ const fadeUp = {
 };
 
 const taxSlabs = [
-  { range: 'First Rs. 500,000', rate: '6%', tax: 'Rs. 30,000' },
-  { range: 'Next Rs. 500,000', rate: '12%', tax: 'Rs. 60,000' },
+  { range: 'Not exceeding Rs. 1,800,000 (Personal Relief)', rate: '0%', tax: 'Rs. 0' },
+  { range: 'Next Rs. 1,000,000', rate: '6%', tax: 'Rs. 60,000' },
   { range: 'Next Rs. 500,000', rate: '18%', tax: 'Rs. 90,000' },
   { range: 'Next Rs. 500,000', rate: '24%', tax: 'Rs. 120,000' },
   { range: 'Next Rs. 500,000', rate: '30%', tax: 'Rs. 150,000' },
@@ -65,7 +65,7 @@ export default function TaxGuidePage() {
               <h2 className="text-2xl font-display font-bold text-foreground mb-4">What is Income Tax in Sri Lanka?</h2>
               <p className="text-muted-foreground leading-relaxed">
                 Income tax in Sri Lanka is a direct tax levied on individuals and businesses by the Inland Revenue Department (IRD).
-                Under the Inland Revenue Act No. 24 of 2017 (as amended), all resident individuals earning above the tax-free
+                Under the Inland Revenue (Amendment) Act No. 02 of 2025, all resident individuals earning above the tax-free
                 threshold are required to pay income tax on their assessable income.
               </p>
               <p className="text-muted-foreground leading-relaxed mt-3">
@@ -82,12 +82,12 @@ export default function TaxGuidePage() {
             <CardContent className="p-8">
               <h2 className="text-2xl font-display font-bold text-foreground mb-4">Tax-Free Threshold</h2>
               <div className="bg-accent/10 rounded-xl p-6 mb-4">
-                <p className="text-accent font-display font-bold text-3xl">Rs. 1,200,000</p>
-                <p className="text-sm text-muted-foreground mt-1">Annual tax-free allowance (Rs. 100,000/month)</p>
+                <p className="text-accent font-display font-bold text-3xl">Rs. 1,800,000</p>
+                <p className="text-sm text-muted-foreground mt-1">Annual tax-free allowance (Rs. 150,000/month)</p>
               </div>
               <p className="text-muted-foreground leading-relaxed">
-                Every resident individual is entitled to a personal relief of Rs. 1,200,000 per year. This means the first
-                Rs. 1,200,000 of your total assessable income is not subject to tax. Only income exceeding this threshold
+                Every resident individual is entitled to a personal relief of Rs. 1,800,000 per year. This means the first
+                Rs. 1,800,000 of your total assessable income is not subject to tax. Only income exceeding this threshold
                 is taxable under the progressive tax slab system.
               </p>
             </CardContent>
@@ -164,38 +164,30 @@ export default function TaxGuidePage() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-sm text-muted-foreground">Less: Personal Relief</span>
-                  <span className="font-display font-semibold text-accent">- Rs. 1,200,000</span>
+                  <span className="font-display font-semibold text-accent">- Rs. 1,800,000</span>
                 </div>
                 <div className="h-px bg-border" />
                 <div className="flex justify-between">
                   <span className="text-sm text-muted-foreground">Taxable Income</span>
-                  <span className="font-display font-bold text-foreground">Rs. 1,200,000</span>
+                  <span className="font-display font-bold text-foreground">Rs. 600,000</span>
                 </div>
                 <div className="h-px bg-border" />
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">First Rs. 500,000 @ 6%</span>
-                  <span className="text-foreground">Rs. 30,000</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Next Rs. 500,000 @ 12%</span>
-                  <span className="text-foreground">Rs. 60,000</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Remaining Rs. 200,000 @ 18%</span>
+                  <span className="text-muted-foreground">Rs. 600,000 @ 6% (within Next Rs. 1,000,000 slab)</span>
                   <span className="text-foreground">Rs. 36,000</span>
                 </div>
                 <div className="h-px bg-border" />
                 <div className="flex justify-between">
                   <span className="font-display font-semibold text-foreground">Total Annual Tax</span>
-                  <span className="font-display font-bold text-destructive text-lg">Rs. 126,000</span>
+                  <span className="font-display font-bold text-destructive text-lg">Rs. 36,000</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-sm text-muted-foreground">Monthly APIT</span>
-                  <span className="font-display font-semibold text-primary">Rs. 10,500</span>
+                  <span className="font-display font-semibold text-primary">Rs. 3,000</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-sm text-muted-foreground">Effective Tax Rate</span>
-                  <span className="font-display font-semibold text-primary">5.25%</span>
+                  <span className="font-display font-semibold text-primary">1.5%</span>
                 </div>
               </div>
             </CardContent>
