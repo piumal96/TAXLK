@@ -1,6 +1,7 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Briefcase, Building2, TrendingUp, Trash2, Edit2 } from 'lucide-react';
+import { Plus, Briefcase, Building2, TrendingUp, Trash2, Edit2, Calculator } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -204,6 +205,7 @@ const categoryColors = {
 
 export default function IncomePage() {
   const { state, dispatch } = useAppContext();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<IncomeCategory>('employment');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<IncomeSource | undefined>();
@@ -233,7 +235,11 @@ export default function IncomePage() {
           <h1 className="text-2xl font-display font-bold text-foreground">Income Sources</h1>
           <p className="text-muted-foreground text-sm mt-1">Manage all your income sources in one place.</p>
         </div>
-        <Dialog open={dialogOpen} onOpenChange={(o) => { setDialogOpen(o); if (!o) setEditing(undefined); }}>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" className="gap-2" onClick={() => navigate('/app/calculator')}>
+            <Calculator className="w-4 h-4" /> Calculate Tax
+          </Button>
+          <Dialog open={dialogOpen} onOpenChange={(o) => { setDialogOpen(o); if (!o) setEditing(undefined); }}>
           <DialogTrigger asChild>
             <Button className="gradient-primary border-0 text-primary-foreground hover:opacity-90">
               <Plus className="w-4 h-4 mr-2" /> Add Income
@@ -255,6 +261,7 @@ export default function IncomePage() {
             </Tabs>
           </DialogContent>
         </Dialog>
+        </div>
       </div>
 
       {/* Category tabs */}
