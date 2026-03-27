@@ -1,6 +1,7 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Briefcase, Building2, TrendingUp, Trash2, Edit2 } from 'lucide-react';
+import { Plus, Briefcase, Building2, TrendingUp, Trash2, Edit2, Calculator } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -157,9 +158,17 @@ function InvestmentForm({ onSave, initial }: { onSave: (s: IncomeSource) => void
         <div><Label>{periodLabel} Rent</Label><Input type="number" value={rent || ''} onChange={(e) => setRent(Number(e.target.value))} /></div>
       </div>
       {isMonthly && (
-        <div className="p-3 bg-secondary rounded-lg text-sm">
-          <span className="text-muted-foreground">Annual Total: </span>
-          <span className="font-semibold text-foreground">{formatCurrency((interest + dividends + rent) * 12)}</span>
+        <div className="p-3 bg-secondary rounded-lg text-sm space-y-1">
+          {rent > 0 && (
+            <div className="flex justify-between text-muted-foreground">
+              <span>Repair Allowance (25% of rent)</span>
+              <span>- {formatCurrency(rent * 0.25 * 12)}</span>
+            </div>
+          )}
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Annual Total: </span>
+            <span className="font-semibold text-foreground">{formatCurrency((interest + dividends + rent * 0.75) * 12)}</span>
+          </div>
         </div>
       )}
       <Button
@@ -196,6 +205,7 @@ const categoryColors = {
 
 export default function IncomePage() {
   const { state, dispatch } = useAppContext();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<IncomeCategory>('employment');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<IncomeSource | undefined>();
@@ -225,7 +235,11 @@ export default function IncomePage() {
           <h1 className="text-2xl font-display font-bold text-foreground">Income Sources</h1>
           <p className="text-muted-foreground text-sm mt-1">Manage all your income sources in one place.</p>
         </div>
-        <Dialog open={dialogOpen} onOpenChange={(o) => { setDialogOpen(o); if (!o) setEditing(undefined); }}>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" className="gap-2" onClick={() => navigate('/app/calculator')}>
+            <Calculator className="w-4 h-4" /> Calculate Tax
+          </Button>
+          <Dialog open={dialogOpen} onOpenChange={(o) => { setDialogOpen(o); if (!o) setEditing(undefined); }}>
           <DialogTrigger asChild>
             <Button className="gradient-primary border-0 text-primary-foreground hover:opacity-90">
               <Plus className="w-4 h-4 mr-2" /> Add Income
@@ -247,6 +261,7 @@ export default function IncomePage() {
             </Tabs>
           </DialogContent>
         </Dialog>
+        </div>
       </div>
 
       {/* Category tabs */}
