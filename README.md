@@ -12,7 +12,7 @@ A modern, full-featured web application for calculating, tracking, and managing 
 - **Real-time Progressive Tax Calculation** based on 2024/25 Sri Lankan IRD slabs
 - **APIT Breakdown** — monthly Advance Personal Income Tax per employment income source
 - **Multi-Income Support** — Employment, Business, and Investment income streams
-- **Multiple Employer Support** — aggregate income across all employers
+- **Multiple Employer Support** — aggregate income across all employers..
 
 ### 📊 Dashboard & History
 - **Tax History** — save and compare calculations across time periods
