@@ -70,8 +70,8 @@ service cloud.firestore {
         (resource.data.user_id == request.auth.uid || isAdmin());
     }
 
-    // ─── User Data Collection (Future) ───
-    // For app-specific user data (preferences, settings, etc.)
+    // ─── User Data Collection ───
+    // Stores app state (income sources, history, profile) per user for cross-browser sync
     match /user_data/{userId} {
       allow read, write: if isOwner(userId);
     }
