@@ -5,7 +5,7 @@
  */
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
-import { Loader2, ShieldAlert } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 
 export function AdminRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -22,24 +22,16 @@ export function AdminRoute({ children }: { children: React.ReactNode }) {
     );
   }
 
+  // Not logged in → go to login, preserving where they came from
   if (!user) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
+  // Logged in but not admin → cleanly redirect to app (no error flash)
   if (user.role !== 'admin') {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center space-y-4 max-w-md px-4">
-          <ShieldAlert className="w-12 h-12 text-destructive mx-auto" />
-          <h1 className="text-xl font-display font-bold text-foreground">Access Denied</h1>
-          <p className="text-muted-foreground text-sm">
-            You don't have permission to access the admin panel.
-          </p>
-          <Navigate to="/app" replace />
-        </div>
-      </div>
-    );
+    return <Navigate to="/app" replace />;
   }
 
   return <>{children}</>;
 }
+

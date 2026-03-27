@@ -28,6 +28,7 @@ import IncomePage from "./pages/IncomePage";
 import CalculatorPage from "./pages/CalculatorPage";
 import HistoryPage from "./pages/HistoryPage";
 import ProfilePage from "./pages/ProfilePage";
+import TaxReturnPage from "./pages/TaxReturnPage";
 import NotFound from "./pages/NotFound";
 
 // Admin pages
@@ -72,6 +73,7 @@ const App = () => (
               <Route path="/app/calculator" element={<ProtectedRoute><AppLayout><CalculatorPage /></AppLayout></ProtectedRoute>} />
               <Route path="/app/history" element={<ProtectedRoute><AppLayout><HistoryPage /></AppLayout></ProtectedRoute>} />
               <Route path="/app/profile" element={<ProtectedRoute><AppLayout><ProfilePage /></AppLayout></ProtectedRoute>} />
+              <Route path="/app/tax-return" element={<ProtectedRoute><AppLayout><TaxReturnPage /></AppLayout></ProtectedRoute>} />
 
               {/* Admin routes — requires admin role */}
               <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>

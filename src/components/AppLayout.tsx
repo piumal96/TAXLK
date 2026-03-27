@@ -10,6 +10,7 @@ import {
   X,
   Shield,
   LogOut,
+  FileText,
 } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -26,6 +27,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     { to: '/app/income', label: 'Income', icon: Wallet },
     { to: '/app/calculator', label: 'Calculator', icon: Calculator },
     { to: '/app/history', label: 'History', icon: History },
+    { to: '/app/tax-return', label: 'File Return', icon: FileText },
     { to: '/app/profile', label: 'Profile', icon: User },
     // Only show Admin link if user has admin role
     ...(user?.role === 'admin' ? [{ to: '/admin', label: 'Admin', icon: Shield }] : []),
