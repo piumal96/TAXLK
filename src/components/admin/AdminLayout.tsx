@@ -1,4 +1,4 @@
-import { Link, useLocation, Outlet } from 'react-router-dom';
+import { Link, useLocation, useNavigate, Outlet } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   LayoutDashboard,
@@ -15,11 +15,13 @@ import {
   ChevronLeft,
   ChevronRight,
   LogOut,
+  ArrowLeft,
 } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { useAuth } from '@/context/AuthContext';
 
 const navSections = [
   {
@@ -63,6 +65,8 @@ const navSections = [
 
 export function AdminLayout() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
   const [collapsed, setCollapsed] = useState(false);
 
   const isActive = (path: string) => {
@@ -81,8 +85,8 @@ export function AdminLayout() {
       >
         {/* Logo */}
         <div className="flex items-center gap-2.5 h-16 px-4 border-b shrink-0">
-          <div className="w-9 h-9 rounded-xl gradient-primary flex items-center justify-center shrink-0">
-            <Shield className="w-5 h-5 text-primary-foreground" />
+          <div className="w-9 h-9 rounded-xl bg-gold flex items-center justify-center shrink-0">
+            <Shield className="w-5 h-5 text-navy" />
           </div>
           {!collapsed && (
             <span className="font-display font-bold text-lg tracking-tight text-foreground">
@@ -143,13 +147,26 @@ export function AdminLayout() {
 
         {/* Footer */}
         <div className="border-t p-3 shrink-0 space-y-1">
+          {user && !collapsed && (
+            <div className="px-3 py-1 mb-1">
+              <p className="text-xs text-muted-foreground truncate">{user.name || user.email}</p>
+              <p className="text-[10px] text-muted-foreground/60 uppercase">Admin</p>
+            </div>
+          )}
           <Link
-            to="/"
+            to="/app"
             className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
           >
-            <LogOut className="w-[18px] h-[18px] shrink-0" />
+            <ArrowLeft className="w-[18px] h-[18px] shrink-0" />
             {!collapsed && <span>Back to App</span>}
           </Link>
+          <button
+            onClick={async () => { await signOut(); navigate('/login'); }}
+            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors w-full"
+          >
+            <LogOut className="w-[18px] h-[18px] shrink-0" />
+            {!collapsed && <span>Logout</span>}
+          </button>
           <Button
             variant="ghost"
             size="sm"

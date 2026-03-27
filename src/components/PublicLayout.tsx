@@ -20,8 +20,11 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen flex flex-col">
       <header className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-xl shadow-card">
         <div className="max-w-7xl mx-auto flex items-center justify-between h-16 px-4 lg:px-8">
-          <Link to="/" className="flex items-center">
+          <Link to="/" className="flex items-center gap-2">
             <img src="/assets/logo.png" alt="Nanaobaba Logo" className="h-10 w-auto mix-blend-multiply" />
+            <span className="font-display font-bold text-xl tracking-tight text-primary">
+              TaxLK
+            </span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-1">
@@ -54,7 +57,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
             <Button asChild variant="ghost" size="sm">
               <Link to="/login">Log in</Link>
             </Button>
-            <Button asChild size="sm" className="gradient-primary border-0 text-primary-foreground">
+            <Button asChild size="sm" className="bg-navy hover:bg-navy-600 border-0 text-white">
               <Link to="/register">Get Started</Link>
             </Button>
           </div>
@@ -96,7 +99,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                 <Button asChild variant="outline" className="w-full">
                   <Link to="/login" onClick={() => setMobileOpen(false)}>Log in</Link>
                 </Button>
-                <Button asChild className="w-full gradient-primary border-0 text-primary-foreground">
+                <Button asChild className="w-full bg-navy hover:bg-navy-600 border-0 text-white">
                   <Link to="/register" onClick={() => setMobileOpen(false)}>Get Started</Link>
                 </Button>
               </div>
@@ -112,8 +115,11 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
         <div className="max-w-7xl mx-auto px-4 lg:px-8 py-12">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <div className="flex items-center mb-4">
+              <div className="flex items-center gap-2 mb-4">
                 <img src="/assets/logo.png" alt="Nanaobaba Logo" className="h-10 w-auto mix-blend-multiply opacity-80" />
+                <span className="font-display font-bold text-lg tracking-tight text-primary opacity-90">
+                  TaxLK
+                </span>
               </div>
               <p className="text-sm text-muted-foreground">
                 Simple, accurate, and fast Sri Lankan income tax calculations for everyone.

@@ -121,7 +121,7 @@ export default function LandingPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
+              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-navy/10 text-navy text-sm font-medium mb-6">
                 <Zap className="w-3.5 h-3.5" /> Free to use · Updated for 2024/25
               </span>
             </motion.div>
@@ -132,7 +132,7 @@ export default function LandingPage() {
               transition={{ duration: 0.5, delay: 0.1 }}
             >
               Sri Lanka Income{' '}
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-navy via-navy-400 to-teal">
                 Tax Calculator
               </span>
             </motion.h1>
@@ -150,7 +150,7 @@ export default function LandingPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
             >
-              <Button asChild size="lg" className="gradient-primary border-0 text-primary-foreground px-8 h-12 text-base shadow-float hover:opacity-90">
+              <Button asChild size="lg" className="bg-navy hover:bg-navy-600 border-0 text-white px-8 h-12 text-base shadow-float">
                 <Link to="/register">
                   Get Started Free <ArrowRight className="w-4 h-4 ml-1" />
                 </Link>
@@ -190,8 +190,8 @@ export default function LandingPage() {
               >
                 <Card className="border-0 shadow-elevated bg-card h-full hover:shadow-float transition-shadow">
                   <CardContent className="p-6">
-                    <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
-                      <f.icon className="w-5 h-5 text-primary" />
+                    <div className="w-11 h-11 rounded-xl bg-navy/10 flex items-center justify-center mb-4">
+                      <f.icon className="w-5 h-5 text-navy" />
                     </div>
                     <h3 className="font-display font-semibold text-foreground mb-2">{f.title}</h3>
                     <p className="text-sm text-muted-foreground">{f.description}</p>
@@ -222,10 +222,10 @@ export default function LandingPage() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.15 }}
               >
-                <div className="w-16 h-16 rounded-2xl gradient-primary flex items-center justify-center mx-auto mb-5 shadow-float">
-                  <s.icon className="w-7 h-7 text-primary-foreground" />
+                <div className="w-16 h-16 rounded-2xl bg-navy flex items-center justify-center mx-auto mb-5 shadow-float">
+                  <s.icon className="w-7 h-7 text-gold" />
                 </div>
-                <span className="text-xs font-bold text-primary uppercase tracking-widest">
+                <span className="text-xs font-bold text-navy uppercase tracking-widest">
                   Step {s.step}
                 </span>
                 <h3 className="font-display font-bold text-foreground text-lg mt-2 mb-2">
@@ -266,8 +266,8 @@ export default function LandingPage() {
               <div className="space-y-4">
                 {benefits.map((b) => (
                   <div key={b.text} className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-lg bg-accent/10 flex items-center justify-center flex-shrink-0">
-                      <b.icon className="w-4 h-4 text-accent" />
+                    <div className="w-9 h-9 rounded-lg bg-teal/10 flex items-center justify-center flex-shrink-0">
+                      <b.icon className="w-4 h-4 text-teal" />
                     </div>
                     <span className="text-foreground font-medium">{b.text}</span>
                   </div>
@@ -290,7 +290,7 @@ export default function LandingPage() {
                     <div className="h-px bg-border" />
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-muted-foreground">Tax-Free Threshold</span>
-                      <span className="font-display font-semibold text-accent">Rs. 1,200,000</span>
+                      <span className="font-display font-semibold text-teal">Rs. 1,200,000</span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-muted-foreground">Taxable Income</span>
@@ -303,7 +303,7 @@ export default function LandingPage() {
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-muted-foreground">Effective Rate</span>
-                      <span className="font-display font-semibold text-primary">7.5%</span>
+                      <span className="font-display font-semibold text-navy">7.5%</span>
                     </div>
                     <div className="h-2 bg-secondary rounded-full overflow-hidden mt-2">
                       <motion.div
@@ -326,20 +326,23 @@ export default function LandingPage() {
       <section className="py-20 lg:py-28">
         <div className="max-w-4xl mx-auto px-4 lg:px-8 text-center">
           <motion.div {...fadeUp}>
-            <div className="gradient-primary rounded-2xl p-10 lg:p-16 shadow-float">
-              <h2 className="text-3xl md:text-4xl font-display font-bold text-primary-foreground">
-                Ready to Calculate Your Tax?
-              </h2>
-              <p className="text-primary-foreground/80 mt-4 text-lg max-w-xl mx-auto">
-                Create a free account and get instant, accurate tax calculations tailored for Sri Lanka.
-              </p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
-                <Button asChild size="lg" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 px-8 h-12 text-base">
-                  <Link to="/register">Create Free Account</Link>
-                </Button>
-                <Button asChild variant="outline" size="lg" className="border-2 border-white/40 text-white bg-white/10 hover:bg-white/20 px-8 h-12 text-base font-semibold">
-                  <Link to="/features">Learn More</Link>
-                </Button>
+            <div className="bg-navy rounded-2xl p-10 lg:p-16 shadow-float relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-gold/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
+              <div className="relative">
+                <h2 className="text-3xl md:text-4xl font-display font-bold text-white">
+                  Ready to Calculate Your Tax?
+                </h2>
+                <p className="text-white/75 mt-4 text-lg max-w-xl mx-auto">
+                  Create a free account and get instant, accurate tax calculations tailored for Sri Lanka.
+                </p>
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
+                  <Button asChild size="lg" className="bg-gold hover:bg-gold-500 text-navy-800 font-semibold px-8 h-12 text-base shadow-gold">
+                    <Link to="/register">Create Free Account</Link>
+                  </Button>
+                  <Button asChild variant="outline" size="lg" className="border-2 border-white/30 text-white bg-white/10 hover:bg-white/20 px-8 h-12 text-base font-semibold">
+                    <Link to="/features">Learn More</Link>
+                  </Button>
+                </div>
               </div>
             </div>
           </motion.div>

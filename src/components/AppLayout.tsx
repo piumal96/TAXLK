@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   LayoutDashboard,
@@ -13,26 +13,38 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-
-const navItems = [
-  { to: '/app', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/app/income', label: 'Income', icon: Wallet },
-  { to: '/app/calculator', label: 'Calculator', icon: Calculator },
-  { to: '/app/history', label: 'History', icon: History },
-  { to: '/app/profile', label: 'Profile', icon: User },
-  { to: '/admin', label: 'Admin', icon: Shield },
-];
+import { useAuth } from '@/context/AuthContext';
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const navItems = [
+    { to: '/app', label: 'Dashboard', icon: LayoutDashboard },
+    { to: '/app/income', label: 'Income', icon: Wallet },
+    { to: '/app/calculator', label: 'Calculator', icon: Calculator },
+    { to: '/app/history', label: 'History', icon: History },
+    { to: '/app/profile', label: 'Profile', icon: User },
+    // Only show Admin link if user has admin role
+    ...(user?.role === 'admin' ? [{ to: '/admin', label: 'Admin', icon: Shield }] : []),
+  ];
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate('/login');
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
       <header className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-xl shadow-card">
         <div className="max-w-7xl mx-auto flex items-center justify-between h-16 px-4 lg:px-8">
-          <Link to="/app" className="flex items-center">
+          <Link to="/app" className="flex items-center gap-2">
             <img src="/assets/logo.png" alt="Nanaobaba Logo" className="h-10 w-auto mix-blend-multiply" />
+            <span className="font-display font-bold text-xl tracking-tight text-primary">
+              TaxLK
+            </span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-1">
@@ -62,9 +74,14 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             })}
           </nav>
 
-          <div className="hidden md:flex items-center gap-2">
-            <Button asChild variant="ghost" size="sm" className="text-muted-foreground">
-              <Link to="/"><LogOut className="w-4 h-4 mr-1" /> Logout</Link>
+          <div className="hidden md:flex items-center gap-3">
+            {user && (
+              <span className="text-xs text-muted-foreground truncate max-w-[150px]">
+                {user.name || user.email}
+              </span>
+            )}
+            <Button variant="ghost" size="sm" className="text-muted-foreground" onClick={handleLogout}>
+              <LogOut className="w-4 h-4 mr-1" /> Logout
             </Button>
           </div>
 
@@ -103,14 +120,16 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               );
             })}
             <div className="border-t mt-2 pt-2">
-              <Link
-                to="/"
-                onClick={() => setMobileOpen(false)}
-                className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground"
+              <button
+                onClick={() => {
+                  setMobileOpen(false);
+                  handleLogout();
+                }}
+                className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground w-full"
               >
                 <LogOut className="w-4 h-4" />
                 Logout
-              </Link>
+              </button>
             </div>
           </motion.nav>
         )}

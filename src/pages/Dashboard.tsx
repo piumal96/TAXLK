@@ -127,19 +127,19 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent className="space-y-3">
               <Button asChild className="w-full justify-between gradient-primary border-0 text-primary-foreground hover:opacity-90">
-                <Link to="/income">
+                <Link to="/app/income">
                   <span className="flex items-center gap-2"><Wallet className="w-4 h-4" /> Add Income Source</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </Button>
               <Button asChild variant="outline" className="w-full justify-between">
-                <Link to="/calculator">
+                <Link to="/app/calculator">
                   <span className="flex items-center gap-2"><Calculator className="w-4 h-4" /> Calculate Tax</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </Button>
               <Button asChild variant="outline" className="w-full justify-between">
-                <Link to="/history">
+                <Link to="/app/history">
                   <span className="flex items-center gap-2"><History className="w-4 h-4" /> View History</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
@@ -167,7 +167,7 @@ export default function Dashboard() {
                   <Wallet className="w-12 h-12 text-muted-foreground/40 mx-auto mb-3" />
                   <p className="text-muted-foreground">No income sources added yet.</p>
                   <Button asChild variant="link" className="mt-2 text-primary">
-                    <Link to="/income">Add your first income source →</Link>
+                    <Link to="/app/income">Add your first income source →</Link>
                   </Button>
                 </div>
               ) : (
@@ -222,7 +222,7 @@ export default function Dashboard() {
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="font-display text-lg">Recent Calculations</CardTitle>
               <Button asChild variant="ghost" size="sm" className="text-primary">
-                <Link to="/history">View all</Link>
+                <Link to="/app/history">View all</Link>
               </Button>
             </CardHeader>
             <CardContent>

@@ -98,7 +98,7 @@ export default function RegisterPage() {
           backgroundPosition: 'center',
         }}
       >
-        <div className="absolute inset-0 bg-blue-900/40 mix-blend-multiply" />
+        <div className="absolute inset-0 bg-navy/50 mix-blend-multiply" />
         <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
         <div className="relative text-center max-w-md z-10 mb-10">
           <p className="text-white text-lg font-medium drop-shadow-lg">
@@ -188,7 +188,7 @@ export default function RegisterPage() {
                 </div>
                 <Button
                   type="submit"
-                  className="w-full gradient-primary border-0 text-primary-foreground h-11"
+                  className="w-full bg-navy hover:bg-navy-600 border-0 text-white h-11"
                   disabled={loading || googleLoading}
                 >
                   {loading ? (
