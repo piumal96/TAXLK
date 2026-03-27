@@ -70,6 +70,13 @@ service cloud.firestore {
         (resource.data.user_id == request.auth.uid || isAdmin());
     }
 
+    // ─── Tax Profile Collection ───
+    // Extended personal details for tax filing (TIN, NIC, employer, etc.)
+    // Stored separately from users/{uid} to keep auth and tax data clean.
+    match /user_profiles/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+
     // ─── User Data Collection (Future) ───
     // For app-specific user data (preferences, settings, etc.)
     match /user_data/{userId} {
