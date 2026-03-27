@@ -4,9 +4,12 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppProvider } from "@/context/AppContext";
+import { AuthProvider } from "@/context/AuthContext";
 import { AppLayout } from "@/components/AppLayout";
 import { PublicLayout } from "@/components/PublicLayout";
 import { AdminLayout } from "@/components/admin/AdminLayout";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { AdminRoute } from "@/components/AdminRoute";
 
 // Public pages
 import LandingPage from "./pages/public/LandingPage";
@@ -46,49 +49,51 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <AppProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            {/* Public marketing routes */}
-            <Route path="/" element={<PublicLayout><LandingPage /></PublicLayout>} />
-            <Route path="/features" element={<PublicLayout><FeaturesPage /></PublicLayout>} />
-            <Route path="/tax-guide" element={<PublicLayout><TaxGuidePage /></PublicLayout>} />
-            <Route path="/pricing" element={<PublicLayout><PricingPage /></PublicLayout>} />
-            <Route path="/contact" element={<PublicLayout><ContactPage /></PublicLayout>} />
+      <AuthProvider>
+        <AppProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+            <Routes>
+              {/* Public marketing routes — no auth required */}
+              <Route path="/" element={<PublicLayout><LandingPage /></PublicLayout>} />
+              <Route path="/features" element={<PublicLayout><FeaturesPage /></PublicLayout>} />
+              <Route path="/tax-guide" element={<PublicLayout><TaxGuidePage /></PublicLayout>} />
+              <Route path="/pricing" element={<PublicLayout><PricingPage /></PublicLayout>} />
+              <Route path="/contact" element={<PublicLayout><ContactPage /></PublicLayout>} />
 
-            {/* Auth routes (standalone layout) */}
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
+              {/* Auth routes — standalone layout */}
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
 
-            {/* Protected app routes */}
-            <Route path="/app" element={<AppLayout><Dashboard /></AppLayout>} />
-            <Route path="/app/income" element={<AppLayout><IncomePage /></AppLayout>} />
-            <Route path="/app/calculator" element={<AppLayout><CalculatorPage /></AppLayout>} />
-            <Route path="/app/history" element={<AppLayout><HistoryPage /></AppLayout>} />
-            <Route path="/app/profile" element={<AppLayout><ProfilePage /></AppLayout>} />
+              {/* Protected app routes — requires authenticated user */}
+              <Route path="/app" element={<ProtectedRoute><AppLayout><Dashboard /></AppLayout></ProtectedRoute>} />
+              <Route path="/app/income" element={<ProtectedRoute><AppLayout><IncomePage /></AppLayout></ProtectedRoute>} />
+              <Route path="/app/calculator" element={<ProtectedRoute><AppLayout><CalculatorPage /></AppLayout></ProtectedRoute>} />
+              <Route path="/app/history" element={<ProtectedRoute><AppLayout><HistoryPage /></AppLayout></ProtectedRoute>} />
+              <Route path="/app/profile" element={<ProtectedRoute><AppLayout><ProfilePage /></AppLayout></ProtectedRoute>} />
 
-            {/* Admin routes */}
-            <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<AdminDashboard />} />
-              <Route path="tax-config" element={<TaxConfigPage />} />
-              <Route path="users" element={<UsersPage />} />
-              <Route path="calculations" element={<CalculationsPage />} />
-              <Route path="analytics" element={<AnalyticsPage />} />
-              <Route path="reports" element={<ReportsPage />} />
-              <Route path="income-settings" element={<IncomeSettingsPage />} />
-              <Route path="settings" element={<SystemSettingsPage />} />
-              <Route path="roles" element={<RolesPage />} />
-              <Route path="audit-logs" element={<AuditLogsPage />} />
-              <Route path="notifications" element={<NotificationsPage />} />
-              <Route path="sandbox" element={<SandboxPage />} />
-            </Route>
+              {/* Admin routes — requires admin role */}
+              <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
+                <Route index element={<AdminDashboard />} />
+                <Route path="tax-config" element={<TaxConfigPage />} />
+                <Route path="users" element={<UsersPage />} />
+                <Route path="calculations" element={<CalculationsPage />} />
+                <Route path="analytics" element={<AnalyticsPage />} />
+                <Route path="reports" element={<ReportsPage />} />
+                <Route path="income-settings" element={<IncomeSettingsPage />} />
+                <Route path="settings" element={<SystemSettingsPage />} />
+                <Route path="roles" element={<RolesPage />} />
+                <Route path="audit-logs" element={<AuditLogsPage />} />
+                <Route path="notifications" element={<NotificationsPage />} />
+                <Route path="sandbox" element={<SandboxPage />} />
+              </Route>
 
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </AppProvider>
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </AppProvider>
+      </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );

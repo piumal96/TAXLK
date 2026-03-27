@@ -1,0 +1,91 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ─── Helper Functions ───
+
+    // Check if request is from an authenticated user
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Check if the requesting user owns this document
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Check if requesting user has admin role (reads from their user document)
+    function isAdmin() {
+      return isAuthenticated() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // Ensure a field is not being modified
+    function fieldUnchanged(field) {
+      return !(field in request.resource.data) ||
+        request.resource.data[field] == resource.data[field];
+    }
+
+    // ─── Users Collection ───
+    match /users/{userId} {
+
+      // READ: Users can read their own doc. Admins can read any user doc.
+      allow read: if isOwner(userId) || isAdmin();
+
+      // CREATE: Only the user themselves can create their own document.
+      // Role must be "user" on creation (prevents self-escalation).
+      allow create: if isOwner(userId) &&
+        request.resource.data.role == 'user' &&
+        request.resource.data.uid == userId;
+
+      // UPDATE: Users can update their own doc, but CANNOT change role or created_at.
+      // Admins can update any user doc (including role changes).
+      allow update: if (isOwner(userId) && fieldUnchanged('role') && fieldUnchanged('created_at'))
+        || isAdmin();
+
+      // DELETE: Only admins can delete user documents.
+      allow delete: if isAdmin();
+    }
+
+    // ─── Tax Records Collection ───
+    // Stores tax calculation results (NOT logic).
+    // Kept separate from business logic per architecture requirements.
+    match /tax_records/{recordId} {
+
+      // Users can read their own tax records. Admins can read all.
+      allow read: if isAuthenticated() &&
+        (resource.data.user_id == request.auth.uid || isAdmin());
+
+      // Users can create their own tax records.
+      allow create: if isAuthenticated() &&
+        request.resource.data.user_id == request.auth.uid;
+
+      // Users can update their own tax records. Admins can update any.
+      allow update: if isAuthenticated() &&
+        (resource.data.user_id == request.auth.uid || isAdmin());
+
+      // Users can delete their own records. Admins can delete any.
+      allow delete: if isAuthenticated() &&
+        (resource.data.user_id == request.auth.uid || isAdmin());
+    }
+
+    // ─── User Data Collection (Future) ───
+    // For app-specific user data (preferences, settings, etc.)
+    match /user_data/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+
+    // ─── App Config Collection (Admin-only) ───
+    // For tax slab configurations, system settings, etc.
+    match /app_config/{configId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    // ─── Deny everything else by default ───
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
