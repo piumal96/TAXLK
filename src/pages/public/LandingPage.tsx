@@ -108,65 +108,133 @@ export default function LandingPage() {
         }}
       />
       {/* Hero */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 gradient-hero opacity-[0.06]" />
-        <div className="absolute inset-0">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/10 rounded-full blur-3xl" />
-        </div>
-        <div className="relative max-w-7xl mx-auto px-4 lg:px-8 py-20 lg:py-32">
-          <div className="max-w-3xl mx-auto text-center">
+      <section className="relative overflow-hidden bg-background pt-20 pb-16 lg:pt-32 lg:pb-24">
+        <div className="absolute inset-0 gradient-hero opacity-[0.03]" />
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-teal/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/4" />
+        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-navy/5 rounded-full blur-[80px] translate-y-1/3 -translate-x-1/4" />
+        
+        <div className="relative max-w-7xl mx-auto px-4 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center border-b border-border/50 pb-20">
+            {/* Left Content */}
+            <div className="max-w-2xl text-center lg:text-left">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-teal/10 text-teal-700 dark:text-teal-400 text-sm font-medium mb-6 ring-1 ring-teal/20">
+                  <Zap className="w-3.5 h-3.5" /> Free to use &middot; Updated for 2024/25
+                </span>
+              </motion.div>
+              <motion.h1
+                className="text-4xl md:text-5xl lg:text-6xl font-display font-extrabold text-foreground tracking-tight leading-tight lg:leading-[1.1]"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+              >
+                Sri Lanka Income <br className="hidden lg:block"/>
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-navy via-navy-400 to-teal">
+                  Tax Calculator
+                </span>
+              </motion.h1>
+              <motion.p
+                className="text-lg md:text-xl text-muted-foreground mt-6 max-w-xl mx-auto lg:mx-0"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+              >
+                Simple, accurate, and fast tax calculations. Handle multiple income sources, get APIT breakdowns, and track your tax history &#8212; securely.
+              </motion.p>
+              <motion.div
+                className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mt-10"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+              >
+                <Button asChild size="lg" className="bg-navy hover:bg-navy-600 border-0 text-white px-8 h-14 text-base shadow-float rounded-xl w-full sm:w-auto">
+                  <Link to="/register">
+                    Get Started Free <ArrowRight className="w-4 h-4 ml-1" />
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" size="lg" className="px-8 h-14 text-base rounded-xl w-full sm:w-auto bg-background/50 backdrop-blur-sm border-2">
+                  <Link to="/app/calculator">
+                    Calculate Now <Calculator className="w-4 h-4 ml-1" />
+                  </Link>
+                </Button>
+              </motion.div>
+              
+              <motion.div 
+                className="mt-10 flex items-center justify-center lg:justify-start gap-4 text-sm text-muted-foreground"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.5 }}
+              >
+                <div className="flex -space-x-2">
+                  {[21, 32, 45, 61].map((imgId) => (
+                    <div key={imgId} className="w-8 h-8 rounded-full border-2 border-background overflow-hidden bg-secondary flex-shrink-0">
+                      <img src={`https://i.pravatar.cc/150?img=${imgId}`} alt="User avatar" className="w-full h-full object-cover" />
+                    </div>
+                  ))}
+                </div>
+                <div>Join thousands of Sri Lankans</div>
+              </motion.div>
+            </div>
+
+            {/* Right Image Container */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
+              className="relative w-full aspect-[4/3] lg:aspect-square flex justify-center items-center mt-10 lg:mt-0"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.7, delay: 0.2 }}
             >
-              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-navy/10 text-navy text-sm font-medium mb-6">
-                <Zap className="w-3.5 h-3.5" /> Free to use · Updated for 2024/25
-              </span>
-            </motion.div>
-            <motion.h1
-              className="text-4xl md:text-5xl lg:text-6xl font-display font-extrabold text-foreground tracking-tight leading-tight"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-            >
-              Sri Lanka Income{' '}
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-navy via-navy-400 to-teal">
-                Tax Calculator
-              </span>
-            </motion.h1>
-            <motion.p
-              className="text-lg md:text-xl text-muted-foreground mt-6 max-w-2xl mx-auto"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              Simple, accurate, and fast tax calculations. Handle multiple income sources, get APIT breakdowns, and track your tax history — all in one place.
-            </motion.p>
-            <motion.div
-              className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-            >
-              <Button asChild size="lg" className="bg-navy hover:bg-navy-600 border-0 text-white px-8 h-12 text-base shadow-float">
-                <Link to="/register">
-                  Get Started Free <ArrowRight className="w-4 h-4 ml-1" />
-                </Link>
-              </Button>
-              <Button asChild variant="outline" size="lg" className="px-8 h-12 text-base">
-                <Link to="/app/calculator">
-                  Calculate Now <Calculator className="w-4 h-4 ml-1" />
-                </Link>
-              </Button>
+              <div className="absolute inset-0 bg-gradient-to-tr from-teal/20 via-transparent to-navy/10 rounded-[3rem] blur-3xl transform rotate-3 scale-105" />
+              <div className="relative w-full h-[85%] lg:h-full max-w-[90%] lg:max-w-none rounded-[2.5rem] overflow-hidden shadow-float border border-white/20 bg-card/50 backdrop-blur-xl ml-auto">
+                 <img 
+                    src="/assets/srilankan-professionals-hero.png" 
+                    alt="Sri Lankan professionals using TaxLK" 
+                    className="w-full h-full object-cover rounded-[2.5rem]"
+                 />
+                 {/* Overlay Gradient for depth */}
+                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent blend-multiply" />
+              </div>
+
+              {/* Floating Profile Card */}
+              <motion.div 
+                className="absolute bottom-24 -left-4 lg:-left-12 bg-card rounded-2xl p-3 shadow-float border border-border/50 backdrop-blur-md flex items-center gap-4 w-[280px]"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.6, duration: 0.5 }}
+              >
+                <div className="w-12 h-12 rounded-full overflow-hidden border border-border/50 flex flex-shrink-0 bg-secondary">
+                  <img src="https://i.pravatar.cc/150?img=47" alt="User avatar" className="w-full h-full object-cover" />
+                </div>
+                <div className="flex-1">
+                  <div className="text-sm font-bold text-foreground font-display">Ashan Silva</div>
+                  <div className="text-xs text-muted-foreground mt-0.5">Financial Analyst</div>
+                </div>
+                <div className="bg-navy text-white text-[10px] font-medium px-3 py-1.5 rounded-full uppercase tracking-wider">
+                  Active
+                </div>
+              </motion.div>
+
+              {/* Floating Analytics Card */}
+              <motion.div 
+                className="absolute bottom-4 left-4 lg:left-0 bg-card rounded-2xl p-4 shadow-elevated border border-border/50 backdrop-blur-md w-[240px]"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.8, duration: 0.5 }}
+              >
+                <div className="text-xs font-bold text-foreground font-display mb-1 flex items-center gap-2">
+                  <BarChart3 className="w-3.5 h-3.5 text-navy" /> Finance Analytics
+                </div>
+                <div className="text-[10px] text-muted-foreground leading-tight">
+                  Calculate and track personal income tax with accuracy and ease.
+                </div>
+              </motion.div>
             </motion.div>
           </div>
         </div>
       </section>
-
-      {/* Stats Counter */}
-      <StatsCounter />
 
       {/* Features */}
       <section className="py-20 lg:py-28 bg-secondary/30">
