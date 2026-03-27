@@ -60,7 +60,7 @@ export function getIncomeTotal(source: IncomeSource): number {
     case 'business':
       return Math.max(0, source.revenue - source.expenses);
     case 'investment':
-      return source.interest + source.dividends + source.rent;
+      return source.interest + source.dividends + (source.rent * 0.75);
   }
 }
 
