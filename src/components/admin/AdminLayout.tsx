@@ -16,6 +16,7 @@ import {
   ChevronRight,
   LogOut,
   ArrowLeft,
+  Loader2,
 } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -68,6 +69,18 @@ export function AdminLayout() {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const [collapsed, setCollapsed] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
+
+  const handleSignOut = async () => {
+    if (signingOut) return;
+    setSigningOut(true);
+    try {
+      await signOut();
+      navigate('/login');
+    } finally {
+      setSigningOut(false);
+    }
+  };
 
   const isActive = (path: string) => {
     if (path === '/admin') return location.pathname === '/admin';
@@ -161,11 +174,16 @@ export function AdminLayout() {
             {!collapsed && <span>Back to App</span>}
           </Link>
           <button
-            onClick={async () => { await signOut(); navigate('/login'); }}
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors w-full"
+            onClick={handleSignOut}
+            disabled={signingOut}
+            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors w-full disabled:opacity-50"
           >
-            <LogOut className="w-[18px] h-[18px] shrink-0" />
-            {!collapsed && <span>Logout</span>}
+            {signingOut ? (
+              <Loader2 className="w-[18px] h-[18px] shrink-0 animate-spin" />
+            ) : (
+              <LogOut className="w-[18px] h-[18px] shrink-0" />
+            )}
+            {!collapsed && <span>{signingOut ? 'Signing out...' : 'Logout'}</span>}
           </button>
           <Button
             variant="ghost"
