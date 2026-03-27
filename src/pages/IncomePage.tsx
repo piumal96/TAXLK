@@ -157,9 +157,17 @@ function InvestmentForm({ onSave, initial }: { onSave: (s: IncomeSource) => void
         <div><Label>{periodLabel} Rent</Label><Input type="number" value={rent || ''} onChange={(e) => setRent(Number(e.target.value))} /></div>
       </div>
       {isMonthly && (
-        <div className="p-3 bg-secondary rounded-lg text-sm">
-          <span className="text-muted-foreground">Annual Total: </span>
-          <span className="font-semibold text-foreground">{formatCurrency((interest + dividends + rent) * 12)}</span>
+        <div className="p-3 bg-secondary rounded-lg text-sm space-y-1">
+          {rent > 0 && (
+            <div className="flex justify-between text-muted-foreground">
+              <span>Repair Allowance (25% of rent)</span>
+              <span>- {formatCurrency(rent * 0.25 * 12)}</span>
+            </div>
+          )}
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Annual Total: </span>
+            <span className="font-semibold text-foreground">{formatCurrency((interest + dividends + rent * 0.75) * 12)}</span>
+          </div>
         </div>
       )}
       <Button
