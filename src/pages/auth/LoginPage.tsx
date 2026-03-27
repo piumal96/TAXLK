@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Calculator, Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -27,19 +27,18 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex">
       {/* Left panel */}
-      <div className="hidden lg:flex lg:w-1/2 gradient-hero items-center justify-center p-12 relative overflow-hidden">
-        <div className="absolute inset-0">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-primary-foreground/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-primary-foreground/5 rounded-full blur-3xl" />
-        </div>
-        <div className="relative text-center max-w-md">
-          <div className="w-16 h-16 rounded-2xl bg-primary-foreground/20 flex items-center justify-center mx-auto mb-8">
-            <Calculator className="w-8 h-8 text-primary-foreground" />
-          </div>
-          <h2 className="text-3xl font-display font-bold text-primary-foreground mb-4">
-            Welcome to TaxLK
-          </h2>
-          <p className="text-primary-foreground/70">
+      <div 
+        className="hidden lg:flex lg:w-1/2 items-end justify-center p-12 relative overflow-hidden"
+        style={{ 
+          backgroundImage: 'url(/assets/login-bg.png)', 
+          backgroundSize: 'cover', 
+          backgroundPosition: 'center' 
+        }}
+      >
+        <div className="absolute inset-0 bg-blue-900/40 mix-blend-multiply" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
+        <div className="relative text-center max-w-md z-10 mb-10">
+          <p className="text-white text-lg font-medium drop-shadow-lg">
             Calculate your Sri Lankan income tax in seconds. Track history, manage multiple income sources, and stay compliant.
           </p>
         </div>
@@ -52,11 +51,8 @@ export default function LoginPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <div className="lg:hidden flex items-center gap-2.5 mb-8">
-            <div className="w-9 h-9 rounded-xl gradient-primary flex items-center justify-center">
-              <Calculator className="w-5 h-5 text-primary-foreground" />
-            </div>
-            <span className="font-display font-bold text-lg text-foreground">TaxLK</span>
+          <div className="flex justify-start mb-8">
+            <img src="/assets/logo.png" alt="Nanaobaba Logo" className="h-16 w-auto mix-blend-multiply" />
           </div>
 
           <h1 className="text-2xl font-display font-bold text-foreground mb-1">Log in to your account</h1>

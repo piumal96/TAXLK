@@ -20,13 +20,8 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen flex flex-col">
       <header className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-xl shadow-card">
         <div className="max-w-7xl mx-auto flex items-center justify-between h-16 px-4 lg:px-8">
-          <Link to="/" className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl gradient-primary flex items-center justify-center">
-              <Calculator className="w-5 h-5 text-primary-foreground" />
-            </div>
-            <span className="font-display font-bold text-lg tracking-tight text-foreground">
-              TaxLK
-            </span>
+          <Link to="/" className="flex items-center">
+            <img src="/assets/logo.png" alt="Nanaobaba Logo" className="h-10 w-auto mix-blend-multiply" />
           </Link>
 
           <nav className="hidden md:flex items-center gap-1">
@@ -117,11 +112,8 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
         <div className="max-w-7xl mx-auto px-4 lg:px-8 py-12">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <div className="flex items-center gap-2.5 mb-4">
-                <div className="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center">
-                  <Calculator className="w-4 h-4 text-primary-foreground" />
-                </div>
-                <span className="font-display font-bold text-foreground">TaxLK</span>
+              <div className="flex items-center mb-4">
+                <img src="/assets/logo.png" alt="Nanaobaba Logo" className="h-10 w-auto mix-blend-multiply opacity-80" />
               </div>
               <p className="text-sm text-muted-foreground">
                 Simple, accurate, and fast Sri Lankan income tax calculations for everyone.

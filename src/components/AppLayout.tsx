@@ -31,13 +31,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen flex flex-col">
       <header className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-xl shadow-card">
         <div className="max-w-7xl mx-auto flex items-center justify-between h-16 px-4 lg:px-8">
-          <Link to="/app" className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl gradient-primary flex items-center justify-center">
-              <Calculator className="w-5 h-5 text-primary-foreground" />
-            </div>
-            <span className="font-display font-bold text-lg tracking-tight text-foreground">
-              TaxLK
-            </span>
+          <Link to="/app" className="flex items-center">
+            <img src="/assets/logo.png" alt="Nanaobaba Logo" className="h-10 w-auto mix-blend-multiply" />
           </Link>
 
           <nav className="hidden md:flex items-center gap-1">
