@@ -91,7 +91,7 @@ export default function ProfilePage() {
     setSaving(true);
     try {
       const { updated_at, ...toSave } = profile;
-      await saveTaxProfile(user.uid, toSave);
+      const { cloudSynced } = await saveTaxProfile(user.uid, toSave);
       dispatch({
         type: 'SET_PROFILE',
         payload: {
@@ -102,11 +102,20 @@ export default function ProfilePage() {
           inputPreference: profile.input_preference,
         },
       });
-      toast.success('Profile saved!', {
-        description: 'Your details will auto-fill your tax return every year.',
-      });
+      if (cloudSynced) {
+        toast.success('Profile saved!', {
+          description: 'Your details will auto-fill your tax return every year.',
+        });
+      } else {
+        toast.warning('Saved on this device', {
+          description:
+            'Cloud sync failed (offline, rules, or network). Your profile is stored locally and will load here until sync works.',
+        });
+      }
     } catch {
-      toast.error('Save failed', { description: 'Check your connection and try again.' });
+      toast.error('Save failed', {
+        description: 'Could not write your profile even locally. Check browser storage and try again.',
+      });
     } finally {
       setSaving(false);
     }

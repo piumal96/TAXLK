@@ -30,7 +30,16 @@ import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useAppContext } from '@/context/AppContext';
 import { useAuth } from '@/context/AuthContext';
-import { calculateTax, formatCurrency, TAX_FREE_THRESHOLD } from '@/lib/taxCalculator';
+import { AssessmentYearSelector } from '@/components/AssessmentYearSelector';
+import {
+  calculateTax,
+  defaultFilingDeadlineLabel,
+  formatAssessmentPeriodLabel,
+  formatCurrency,
+  parseAssessmentYearLabel,
+  TAX_ASSESSMENT_YEAR,
+  TAX_FREE_THRESHOLD,
+} from '@/lib/taxCalculator';
 import type { EmploymentIncome, InvestmentIncome, BusinessIncome, IncomeSource } from '@/types/income';
 import { cn } from '@/lib/utils';
 import { getTaxProfile } from '@/services/firebase/profileService';
@@ -45,6 +54,8 @@ interface EmploymentEntry {
   sourceId: string;
   label: string;
   remuneration: number;    // auto-filled from app
+  /** Mirrors Income Sources; non-APIT jobs excluded from estimated APIT allocation in summary tax math */
+  apitApplicable: boolean;
   employerName: string;    // manual
   employerTIN: string;     // manual
   terminalBenefits: number; // manual — gratuity / EPF lump sum
@@ -113,7 +124,6 @@ const AIT_RATE                = 0.10;
 const CAPITAL_GAINS_RATE      = 0.10;     // Schedule 8C — gain on realization of investment assets
 const CHARITABLE_MAX_FLAT     = 75_000;
 const DRAFT_KEY               = 'taxreturn-draft-2024-2025';
-const ASSESSMENT_YEAR         = '2024/2025';
 
 const STEPS = [
   { number: 1, title: 'Your Profile & TIN',      icon: User,         short: 'Profile' },
@@ -144,6 +154,7 @@ function buildDraft(sources: IncomeSource[], profileName: string): TaxReturnDraf
       sourceId: s.id,
       label: s.label,
       remuneration: s.salary + s.bonus + s.allowances + s.benefits,
+      apitApplicable: s.apitApplicable !== false,
       employerName: '', employerTIN: '', terminalBenefits: 0, apitFromT10: 0,
     })),
     interestIncome,
@@ -208,6 +219,24 @@ function mergeSaved(fresh: TaxReturnDraft, saved: Partial<TaxReturnDraft>): TaxR
     assetAcquisitions:  saved.assetAcquisitions   ?? [],
     assetDisposals:     saved.assetDisposals      ?? [],
   };
+}
+
+/** Keep employment schedule aligned with Income Sources; preserve manual fields by `sourceId`. */
+function syncEmploymentFromSources(draft: TaxReturnDraft, sources: IncomeSource[]): TaxReturnDraft {
+  const freshEmploy = buildDraft(sources, draft.fullName || '').employmentEntries;
+  const prevById = new Map(draft.employmentEntries.map((e) => [e.sourceId, e]));
+  const employmentEntries = freshEmploy.map((f) => {
+    const p = prevById.get(f.sourceId);
+    if (!p) return f;
+    return {
+      ...f,
+      employerName: p.employerName,
+      employerTIN: p.employerTIN,
+      terminalBenefits: p.terminalBenefits,
+      apitFromT10: p.apitFromT10,
+    };
+  });
+  return { ...draft, employmentEntries };
 }
 
 // Apply saved TaxProfile data to any fields that are still empty in the draft
@@ -325,6 +354,8 @@ function SummaryRow({
 export default function TaxReturnPage() {
   const { state } = useAppContext();
   const { user }  = useAuth();
+  const assessmentYear = parseAssessmentYearLabel(state.assessmentYear) ?? TAX_ASSESSMENT_YEAR;
+  const filingDeadlineText = defaultFilingDeadlineLabel(assessmentYear);
 
   const [step, setStep] = useState(1);
   const [taxProfile, setTaxProfile] = useState<TaxProfile>(defaultTaxProfile);
@@ -344,6 +375,11 @@ export default function TaxReturnPage() {
     } catch { /* ignore */ }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Reconcile employment rows when Income Sources change (labels, remuneration, APIT flag), keeping T.10 / employer data.
+  useEffect(() => {
+    setDraft((prev) => syncEmploymentFromSources(prev, state.incomeSources));
+  }, [state.incomeSources]);
 
   // Step 2: Load TaxProfile from Firestore and apply to any still-empty fields
   useEffect(() => {
@@ -381,6 +417,10 @@ export default function TaxReturnPage() {
   const totalEmploymentRemuneration = draft.employmentEntries.reduce((s, e) => s + e.remuneration, 0);
   const totalTerminalBenefits       = draft.employmentEntries.reduce((s, e) => s + e.terminalBenefits, 0);
   const totalEmployment             = totalEmploymentRemuneration + totalTerminalBenefits;
+  const apitEligibleEmployment =
+    draft.employmentEntries
+      .filter(e => e.apitApplicable !== false)
+      .reduce((s, e) => s + e.remuneration + e.terminalBenefits, 0);
   // Progressive income (excl. capital gains — taxed separately)
   const progressiveIncome           = totalEmployment + draft.interestIncome + draft.dividendIncome + draft.rentIncome + draft.businessNetIncome + draft.lotteryOtherIncome;
   const totalIncome                 = progressiveIncome + draft.capitalGainsIncome;
@@ -398,7 +438,9 @@ export default function TaxReturnPage() {
   // Progressive tax on employment/ordinary income (after reliefs)
   const adjustedIncome      = Math.max(0, progressiveIncome - totalExtraRelief);
   const adjEmployment       = progressiveIncome > 0 ? totalEmployment * (adjustedIncome / progressiveIncome) : 0;
-  const taxResult           = calculateTax(adjustedIncome, adjEmployment);
+  const adjAPITEligible =
+    progressiveIncome > 0 ? apitEligibleEmployment * (adjustedIncome / progressiveIncome) : 0;
+  const taxResult           = calculateTax(adjustedIncome, adjEmployment, adjAPITEligible);
 
   // Capital gains tax — Schedule 8C — flat 10% (not in progressive bands)
   const capitalGainsTax     = Math.round(draft.capitalGainsIncome * CAPITAL_GAINS_RATE);
@@ -462,8 +504,8 @@ export default function TaxReturnPage() {
       : '<tr><td class="indent muted">None declared</td><td></td></tr>';
 
     const today = new Date().toLocaleDateString('en-LK', { day: '2-digit', month: 'long', year: 'numeric' });
-    const yr0 = ASSESSMENT_YEAR.split('/')[0];
-    const yr1 = ASSESSMENT_YEAR.split('/')[1];
+    const yr0 = assessmentYear.split('/')[0];
+    const yr1 = assessmentYear.split('/')[1];
     const grossTax = taxResult.totalTax + capitalGainsTax;
 
     // ── inline helpers ────────────────────────────────────────────────────────
@@ -523,7 +565,7 @@ export default function TaxReturnPage() {
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<title>Individual Income Tax Return ${ASSESSMENT_YEAR} — ${draft.fullName || 'Unnamed'}</title>
+<title>Individual Income Tax Return ${assessmentYear} — ${draft.fullName || 'Unnamed'}</title>
 <style>
 /* ════════════════════════════════════════════════════
    LANKA TAX HUB — Professional Print Stylesheet
@@ -895,7 +937,7 @@ body {
   <div class="doc-header-right">
     <div class="form-type">Form IITRIT — Individual</div>
     <div class="form-title">Individual Income Tax Return</div>
-    <div class="form-ya">Year of Assessment: <strong>${ASSESSMENT_YEAR}</strong> &nbsp;|&nbsp; Period: 1 April ${yr0} – 31 March ${yr1}</div>
+    <div class="form-ya">Year of Assessment: <strong>${assessmentYear}</strong> &nbsp;|&nbsp; Period: 1 April ${yr0} – 31 March ${yr1}</div>
   </div>
   <div class="doc-header-tin">
     <div class="tin-lbl">TIN</div>
@@ -948,7 +990,7 @@ ${tl('GROSS TOTAL INCOME', fc(totalIncome))}
 
 <!-- Page 2 continuity header -->
 <div class="cont-hdr">
-  <span><strong>Individual Income Tax Return</strong> — Year of Assessment ${ASSESSMENT_YEAR}</span>
+  <span><strong>Individual Income Tax Return</strong> — Year of Assessment ${assessmentYear}</span>
   <span>${draft.fullName || ''}${draft.tin ? '  |  TIN: ' + draft.tin : ''}</span>
 </div>
 
@@ -997,7 +1039,7 @@ ${rl(
 
 <!-- Page 3 continuity header -->
 <div class="cont-hdr">
-  <span><strong>Individual Income Tax Return</strong> — Year of Assessment ${ASSESSMENT_YEAR}</span>
+  <span><strong>Individual Income Tax Return</strong> — Year of Assessment ${assessmentYear}</span>
   <span>${draft.fullName || ''}${draft.tin ? '  |  TIN: ' + draft.tin : ''}</span>
 </div>
 
@@ -1039,7 +1081,7 @@ ${rl('Net Worth (Assets − Liabilities)', fc(netWorth), netWorth >= 0 ? 'refund
 <!-- SECTION H: Capital Flow -->
 ${sh('H', 'Part D — Capital Flow During the Year  (Section 126(2) IR Act No.24/2017)')}
 <div class="wbox">
-  <strong>Mandatory Disclosure:</strong> You must declare all assets acquired or disposed of during the year of assessment ${ASSESSMENT_YEAR}, regardless of whether tax is payable on those transactions. Failure to disclose is an offence under the Inland Revenue Act.
+  <strong>Mandatory Disclosure:</strong> You must declare all assets acquired or disposed of during the year of assessment ${assessmentYear}, regardless of whether tax is payable on those transactions. Failure to disclose is an offence under the Inland Revenue Act.
 </div>
 
 ${ssh('Assets Acquired  (purchased, gifted to you, or inherited)')}
@@ -1228,8 +1270,11 @@ ${draft.assetDisposals.length
               <FileText className="w-4 h-4 text-amber-600 dark:text-amber-400" />
             </div>
             <div>
-              <p className="text-sm font-semibold text-amber-900 dark:text-amber-300">Year of Assessment: {ASSESSMENT_YEAR}</p>
-              <p className="text-xs text-amber-700/70 dark:text-amber-500 mt-0.5">Covers April 1, 2024 – March 31, 2025 · Filing deadline: <strong>30 November 2025</strong></p>
+              <p className="text-sm font-semibold text-amber-900 dark:text-amber-300">Year of Assessment: {assessmentYear}</p>
+              <p className="text-xs text-amber-700/70 dark:text-amber-500 mt-0.5">
+                Covers {formatAssessmentPeriodLabel(assessmentYear)} · Typical filing deadline:{' '}
+                <strong>{filingDeadlineText}</strong> (confirm on IRD)
+              </p>
             </div>
           </div>
 
@@ -2237,7 +2282,7 @@ ${draft.assetDisposals.length
               </div>
               <div>
                 <p className="text-white font-bold text-sm">Your Return Summary</p>
-                <p className="text-white/55 text-xs">Year of Assessment {ASSESSMENT_YEAR} · Take these to RAMIS</p>
+                <p className="text-white/55 text-xs">Year of Assessment {assessmentYear} · Take these to RAMIS</p>
               </div>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-px bg-border/30">
@@ -2339,7 +2384,7 @@ ${draft.assetDisposals.length
                 },
                 {
                   n: 5, title: 'Select "Individual Income Tax Return"',
-                  desc: 'Choose this option. Then select the Year of Assessment: 2024/2025.',
+                  desc: `Choose this option. Then select the Year of Assessment (e.g. ${assessmentYear}) in RAMIS to match this return.`,
                 },
                 {
                   n: 6, title: 'Fill Schedule 1 — Employment Income',
@@ -2476,17 +2521,17 @@ ${draft.assetDisposals.length
         <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="flex flex-wrap items-center gap-2 mb-3">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-xs font-semibold text-white/90 backdrop-blur-sm">
-                <FileText className="w-3 h-3" /> YoA {ASSESSMENT_YEAR}
-              </span>
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F7B718]/20 border border-[#F7B718]/30 text-xs font-semibold text-amber-200">
-                Deadline: 30 Nov 2025
+                Typical deadline: {filingDeadlineText}
               </span>
             </div>
             <h1 className="text-xl sm:text-2xl font-display font-bold tracking-tight leading-tight">
               Individual Income Tax Return
             </h1>
             <p className="text-white/55 text-sm mt-1">Sri Lanka Inland Revenue Department · RAMIS Filing Assistant</p>
+            <div className="mt-4 max-w-md rounded-xl bg-black/20 border border-white/10 p-4 backdrop-blur-sm">
+              <AssessmentYearSelector variant="onDark" />
+            </div>
           </div>
 
           {/* Live balance pill */}

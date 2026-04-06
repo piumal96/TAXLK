@@ -4,16 +4,26 @@ import {
   Wallet,
   Calculator,
   History,
-  TrendingUp,
   ArrowRight,
   Banknote,
-  PiggyBank,
+  Receipt,
   BarChart3,
+  PiggyBank,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useAppContext } from '@/context/AppContext';
-import { getAllIncomeTotal, getEmploymentTotal } from '@/types/income';
+import {
+  getAllIncomeTotal,
+  getAPITEligibleEmploymentTotal,
+  getEmploymentTotal,
+  getHistoryBalancePayable,
+  getIncomeTotal,
+  getInvestmentRentRepairAllowanceAnnual,
+  historyIncomeSnapshotMatchesCurrent,
+  incomeSourcesTaxSignature,
+  taxTotalsCloseEnough,
+} from '@/types/income';
 import { calculateTax, formatCurrency } from '@/lib/taxCalculator';
 
 const fadeIn = {
@@ -24,13 +34,56 @@ const fadeIn = {
 
 export default function Dashboard() {
   const { state } = useAppContext();
-  const { incomeSources, profile, history } = state;
+  const { incomeSources, profile, history, calculatorSession } = state;
 
   const totalIncome = getAllIncomeTotal(incomeSources);
   const employmentIncome = getEmploymentTotal(incomeSources);
-  const taxResult = calculateTax(totalIncome, employmentIncome);
+  const apitEligibleEmployment = getAPITEligibleEmploymentTotal(incomeSources);
+  const rentRepairAllowanceAnnual = getInvestmentRentRepairAllowanceAnnual(incomeSources);
+  const taxResult = calculateTax(totalIncome, employmentIncome, apitEligibleEmployment, rentRepairAllowanceAnnual);
 
-  const summaryCards = [
+  const sessionMatchesTax =
+    !!calculatorSession &&
+    incomeSourcesTaxSignature(calculatorSession.incomeSnapshot) === incomeSourcesTaxSignature(incomeSources) &&
+    taxTotalsCloseEnough(calculatorSession.taxResult, taxResult);
+
+  const head = history[0];
+  const historyMatchesTaxTotals = !!head && taxTotalsCloseEnough(head, taxResult);
+  const historyMatchesIncome = historyIncomeSnapshotMatchesCurrent(head, incomeSources);
+  const useHistoryCredits = historyMatchesTaxTotals || historyMatchesIncome;
+
+  let totalTaxPayable = taxResult.totalTax;
+  let creditsApit = 0;
+  let creditsWht = 0;
+
+  if (sessionMatchesTax && calculatorSession) {
+    creditsApit = calculatorSession.apitDeductedAnnual ?? 0;
+    creditsWht = calculatorSession.whtOnInterestAnnual ?? 0;
+    totalTaxPayable = Math.max(0, calculatorSession.taxResult.totalTax - creditsApit - creditsWht);
+  } else if (useHistoryCredits && head) {
+    creditsApit = head.apitDeductedAnnual ?? 0;
+    creditsWht = head.whtOnInterestAnnual ?? 0;
+    totalTaxPayable = historyMatchesTaxTotals
+      ? getHistoryBalancePayable(head)
+      : Math.max(0, taxResult.totalTax - creditsApit - creditsWht);
+  }
+
+  const creditsTotal = creditsApit + creditsWht;
+
+  const maxIncomeSourceAmount =
+    incomeSources.length === 0 ? 0 : Math.max(...incomeSources.map((s) => getIncomeTotal(s)));
+
+  const incomeBreakdownByAmountDesc = [...incomeSources].sort(
+    (a, b) => getIncomeTotal(b) - getIncomeTotal(a),
+  );
+
+  const summaryCards: {
+    label: string;
+    value: string;
+    icon: typeof Wallet;
+    gradient: string;
+    light: boolean;
+  }[] = [
     {
       label: 'Total Income',
       value: formatCurrency(totalIncome),
@@ -39,23 +92,23 @@ export default function Dashboard() {
       light: false,
     },
     {
-      label: 'Total Tax',
+      label: 'Total Tax Liability',
       value: formatCurrency(taxResult.totalTax),
       icon: Banknote,
       gradient: '',
       light: true,
     },
     {
-      label: 'Monthly APIT',
-      value: formatCurrency(taxResult.monthlyAPIT),
+      label: 'Credits Available',
+      value: formatCurrency(creditsTotal),
       icon: PiggyBank,
       gradient: '',
       light: true,
     },
     {
-      label: 'Effective Rate',
-      value: `${taxResult.effectiveRate.toFixed(1)}%`,
-      icon: TrendingUp,
+      label: 'Total tax payable',
+      value: formatCurrency(totalTaxPayable),
+      icon: Receipt,
       gradient: 'gradient-success',
       light: false,
     },
@@ -172,14 +225,9 @@ export default function Dashboard() {
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {incomeSources.map((source) => {
-                    const amount =
-                      source.category === 'employment'
-                        ? source.salary + source.bonus + source.allowances + source.benefits
-                        : source.category === 'business'
-                        ? Math.max(0, source.revenue - source.expenses)
-                        : source.interest + source.dividends + source.rent;
-                    const pct = totalIncome > 0 ? (amount / totalIncome) * 100 : 0;
+                  {incomeBreakdownByAmountDesc.map((source) => {
+                    const amount = getIncomeTotal(source);
+                    const pct = maxIncomeSourceAmount > 0 ? (amount / maxIncomeSourceAmount) * 100 : 0;
                     return (
                       <div key={source.id} className="grid grid-cols-[1fr_7rem_6.5rem] items-center gap-3">
                         <div className="min-w-0 overflow-hidden">
@@ -240,7 +288,10 @@ export default function Dashboard() {
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm font-medium text-destructive">{formatCurrency(h.totalTax)}</p>
+                      <p className="text-xs text-muted-foreground">Balance payable</p>
+                      <p className="text-sm font-medium text-destructive">
+                        {formatCurrency(getHistoryBalancePayable(h))}
+                      </p>
                       <p className="text-xs text-muted-foreground">{h.effectiveRate.toFixed(1)}% eff.</p>
                     </div>
                   </div>
