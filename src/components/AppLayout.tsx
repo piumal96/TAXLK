@@ -1,4 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { AIAssistant } from '@/components/AIAssistant';
 import { motion } from 'framer-motion';
 import {
   LayoutDashboard,
@@ -140,6 +141,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 lg:px-8 py-6 lg:py-8">
         {children}
       </main>
+
+      <AIAssistant />
     </div>
   );
 }
