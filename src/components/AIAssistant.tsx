@@ -548,8 +548,8 @@ export function AIAssistant() {
             />
 
             <motion.div
-              className="fixed bottom-6 right-6 z-50 w-[calc(100vw-3rem)] max-w-[360px] flex flex-col rounded-2xl shadow-float border border-border bg-card"
-              style={{ height: 570 }}
+              className="fixed bottom-6 right-6 z-50 w-[calc(100vw-2rem)] max-w-[480px] flex flex-col overflow-hidden rounded-sm shadow-float border border-border bg-card"
+              style={{ height: 'min(720px, calc(100dvh - 5rem))' }}
               initial={{ opacity: 0, y: 60, scale: 0.88 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 60, scale: 0.88 }}
@@ -605,7 +605,7 @@ export function AIAssistant() {
 
               {/* Live tax mini-bar */}
               {taxResult && incomeSources.length > 0 && (
-                <div className="shrink-0 mx-3 mt-2 bg-muted/70 border border-border rounded-xl px-3 py-2 grid grid-cols-4 gap-1 text-center text-xs">
+                <div className="shrink-0 mx-3 mt-2 bg-muted/70 border border-border rounded-md px-3 py-2 grid grid-cols-4 gap-1 text-center text-xs">
                   {[
                     { label: 'Income',  value: formatCurrency(totalIncome) },
                     { label: 'Tax',     value: formatCurrency(taxResult.totalTax) },
@@ -647,10 +647,10 @@ export function AIAssistant() {
                           : <Sparkles className="w-3 h-3 text-gold-200" />
                         }
                       </div>
-                      <div className={`max-w-[80%] rounded-2xl px-3 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${
+                      <div className={`max-w-[80%] rounded-lg px-3 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${
                         msg.role === 'user'
-                          ? 'bg-primary text-primary-foreground rounded-br-sm'
-                          : 'bg-muted text-foreground rounded-bl-sm border border-border/60'
+                          ? 'bg-primary text-primary-foreground rounded-br-md'
+                          : 'bg-muted text-foreground rounded-bl-md border border-border/60'
                       }`}>
                         {/* Bouncing dots while waiting for first token */}
                         {loading && i === messages.length - 1 && msg.role === 'assistant' && msg.content === '' ? (
@@ -676,7 +676,7 @@ export function AIAssistant() {
                 {error && (
                   <motion.p
                     initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                    className="text-xs text-destructive bg-destructive/10 rounded-lg px-3 py-2"
+                    className="text-xs text-destructive bg-destructive/10 rounded-md px-3 py-2"
                   >
                     {error}
                   </motion.p>
@@ -732,14 +732,14 @@ export function AIAssistant() {
                   placeholder={noKey ? 'API key required…' : 'Ask about your taxes…'}
                   rows={1}
                   disabled={loading || noKey}
-                  className="flex-1 resize-none bg-muted/60 border border-border rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1 focus:ring-offset-card placeholder:text-muted-foreground max-h-20 overflow-y-auto disabled:opacity-50"
+                  className="flex-1 resize-none bg-muted/60 border border-border rounded-sm px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1 focus:ring-offset-card placeholder:text-muted-foreground max-h-20 overflow-y-auto disabled:opacity-50"
                   style={{ lineHeight: '1.5' }}
                 />
                 <Button
                   type="submit"
                   size="icon"
                   disabled={!input.trim() || loading || noKey}
-                  className="h-9 w-9 shrink-0 gradient-primary text-primary-foreground border-0 shadow-sm hover:brightness-110 active:brightness-95 disabled:opacity-40"
+                  className="h-9 w-9 shrink-0 rounded-sm gradient-primary text-primary-foreground border-0 shadow-sm hover:brightness-110 active:brightness-95 disabled:opacity-40"
                 >
                   {loading
                     ? <Loader2 className="w-4 h-4 animate-spin" />
