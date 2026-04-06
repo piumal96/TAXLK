@@ -359,8 +359,8 @@ export function AIAssistant() {
   const trendIcon = useMemo(() => {
     if (history.length < 2) return null;
     const diff = history[0].totalIncome - history[1].totalIncome;
-    if (diff > 10_000)  return <TrendingUp   className="w-3 h-3 text-red-300" />;
-    if (diff < -10_000) return <TrendingDown  className="w-3 h-3 text-green-300" />;
+    if (diff > 10_000)  return <TrendingUp   className="w-3 h-3 text-saffron-200" />;
+    if (diff < -10_000) return <TrendingDown  className="w-3 h-3 text-teal-200" />;
     return <Minus className="w-3 h-3 text-white/50" />;
   }, [history]);
 
@@ -513,22 +513,22 @@ export function AIAssistant() {
               onClick={handleOpen}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.92 }}
-              className="relative w-14 h-14 rounded-full bg-gradient-to-br from-violet-500 to-indigo-600 shadow-xl shadow-violet-500/30 flex items-center justify-center text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
+              className="relative w-14 h-14 rounded-full gradient-primary shadow-float flex items-center justify-center text-primary-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               aria-label="Open AI tax assistant"
             >
               <motion.div
                 animate={{ rotate: [0, 15, -15, 0] }}
                 transition={{ duration: 4, repeat: Infinity, repeatDelay: 6 }}
               >
-                <Sparkles className="w-6 h-6" />
+                <Sparkles className="w-6 h-6 text-gold-300 drop-shadow-sm" />
               </motion.div>
               <motion.span
-                className="absolute inset-0 rounded-full border-2 border-violet-400/50"
+                className="absolute inset-0 rounded-full border-2 border-accent/45"
                 animate={{ scale: [1, 1.65], opacity: [0.6, 0] }}
                 transition={{ duration: 2.5, repeat: Infinity, ease: 'easeOut' }}
               />
               <motion.span
-                className="absolute inset-0 rounded-full border border-violet-300/30"
+                className="absolute inset-0 rounded-full border border-primary-foreground/25"
                 animate={{ scale: [1, 2.0], opacity: [0.4, 0] }}
                 transition={{ duration: 2.5, repeat: Infinity, ease: 'easeOut', delay: 0.6 }}
               />
@@ -542,13 +542,13 @@ export function AIAssistant() {
         {open && (
           <>
             <motion.div
-              className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm md:hidden"
+              className="fixed inset-0 z-40 bg-navy-900/25 backdrop-blur-sm md:hidden"
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               onClick={() => setOpen(false)}
             />
 
             <motion.div
-              className="fixed bottom-6 right-6 z-50 w-[calc(100vw-3rem)] max-w-[360px] flex flex-col rounded-2xl shadow-2xl overflow-hidden border border-border bg-card"
+              className="fixed bottom-6 right-6 z-50 w-[calc(100vw-3rem)] max-w-[360px] flex flex-col rounded-2xl shadow-float border border-border bg-card"
               style={{ height: 570 }}
               initial={{ opacity: 0, y: 60, scale: 0.88 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -556,32 +556,32 @@ export function AIAssistant() {
               transition={{ type: 'spring', stiffness: 340, damping: 26 }}
             >
               {/* Header */}
-              <div className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-violet-600 to-indigo-600 text-white shrink-0">
+              <div className="flex items-center gap-3 px-4 py-3 gradient-primary text-primary-foreground shrink-0">
                 <motion.div
                   animate={{ rotate: [0, 15, -15, 0] }}
                   transition={{ duration: 4, repeat: Infinity, repeatDelay: 7 }}
-                  className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center shrink-0"
+                  className="w-8 h-8 rounded-full bg-accent/20 border border-accent/30 flex items-center justify-center shrink-0"
                 >
-                  <Bot className="w-4 h-4" />
+                  <Bot className="w-4 h-4 text-gold-200" />
                 </motion.div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <p className="font-semibold text-sm">TaxBot AI</p>
                     {trendIcon && (
-                      <span className="bg-white/20 rounded-full px-1.5 py-0.5 flex items-center gap-0.5">
+                      <span className="bg-primary-foreground/15 rounded-full px-1.5 py-0.5 flex items-center gap-0.5 border border-primary-foreground/10">
                         {trendIcon}
                       </span>
                     )}
-                    <span className="flex items-center gap-1 text-xs text-white/70 ml-auto">
+                    <span className="flex items-center gap-1 text-xs text-primary-foreground/75 ml-auto">
                       <motion.span
-                        className="w-1.5 h-1.5 rounded-full bg-green-400"
+                        className="w-1.5 h-1.5 rounded-full bg-teal-400 shadow-[0_0_6px_hsl(172_100%_45%_/_0.7)]"
                         animate={{ opacity: [1, 0.4, 1] }}
                         transition={{ duration: 2, repeat: Infinity }}
                       />
                       Online
                     </span>
                   </div>
-                  <p className="text-xs text-white/60 truncate mt-0.5">
+                  <p className="text-xs text-primary-foreground/65 truncate mt-0.5">
                     {incomeSources.length > 0
                       ? `${incomeSources.length} source${incomeSources.length !== 1 ? 's' : ''} · ${assessmentYear}`
                       : `Sri Lankan tax advisor · ${assessmentYear}`}
@@ -589,7 +589,7 @@ export function AIAssistant() {
                 </div>
                 <Button
                   variant="ghost" size="icon"
-                  className="text-white/80 hover:text-white hover:bg-white/20 h-7 w-7 shrink-0"
+                  className="text-primary-foreground/85 hover:text-primary-foreground hover:bg-primary-foreground/15 h-7 w-7 shrink-0"
                   onClick={() => setOpen(false)}
                 >
                   <X className="w-4 h-4" />
@@ -598,21 +598,21 @@ export function AIAssistant() {
 
               {/* No-key notice */}
               {noKey && (
-                <div className="px-4 py-2 bg-amber-50 border-b border-amber-200 text-amber-800 text-xs">
-                  Add <code className="font-mono bg-amber-100 px-1 rounded">VITE_OPENROUTER_API_KEY</code> to <code className="font-mono bg-amber-100 px-1 rounded">.env</code> to enable AI.
+                <div className="px-4 py-2 bg-accent/12 border-b border-accent/25 text-foreground text-xs">
+                  Add <code className="font-mono bg-navy-900/8 dark:bg-accent/20 px-1 rounded">VITE_OPENROUTER_API_KEY</code> to <code className="font-mono bg-navy-900/8 dark:bg-accent/20 px-1 rounded">.env</code> to enable AI.
                 </div>
               )}
 
               {/* Live tax mini-bar */}
               {taxResult && incomeSources.length > 0 && (
-                <div className="shrink-0 mx-3 mt-2 bg-gradient-to-r from-violet-50 to-indigo-50 border border-violet-100 rounded-xl px-3 py-2 grid grid-cols-4 gap-1 text-center text-xs">
+                <div className="shrink-0 mx-3 mt-2 bg-muted/70 border border-border rounded-xl px-3 py-2 grid grid-cols-4 gap-1 text-center text-xs">
                   {[
                     { label: 'Income',  value: formatCurrency(totalIncome) },
                     { label: 'Tax',     value: formatCurrency(taxResult.totalTax) },
                     { label: 'Payable', value: formatCurrency(balancePayable), red: true },
                     { label: 'Rate',    value: `${taxResult.effectiveRate.toFixed(1)}%` },
                   ].map((item, i, arr) => (
-                    <div key={item.label} className={`flex flex-col ${i < arr.length - 1 ? 'border-r border-violet-200' : ''}`}>
+                    <div key={item.label} className={`flex flex-col ${i < arr.length - 1 ? 'border-r border-border' : ''}`}>
                       <span className="text-muted-foreground text-[10px]">{item.label}</span>
                       <span className={`font-semibold mt-0.5 truncate text-[11px] ${item.red ? 'text-red-600' : 'text-foreground'}`}>
                         {item.value}
@@ -639,18 +639,18 @@ export function AIAssistant() {
                     >
                       <div className={`w-6 h-6 rounded-full shrink-0 flex items-center justify-center ${
                         msg.role === 'user'
-                          ? 'bg-indigo-500'
-                          : 'bg-gradient-to-br from-violet-500 to-indigo-600'
+                          ? 'bg-primary'
+                          : 'gradient-primary'
                       }`}>
                         {msg.role === 'user'
-                          ? <User className="w-3 h-3 text-white" />
-                          : <Sparkles className="w-3 h-3 text-white" />
+                          ? <User className="w-3 h-3 text-primary-foreground" />
+                          : <Sparkles className="w-3 h-3 text-gold-200" />
                         }
                       </div>
                       <div className={`max-w-[80%] rounded-2xl px-3 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${
                         msg.role === 'user'
-                          ? 'bg-indigo-600 text-white rounded-br-sm'
-                          : 'bg-muted text-foreground rounded-bl-sm'
+                          ? 'bg-primary text-primary-foreground rounded-br-sm'
+                          : 'bg-muted text-foreground rounded-bl-sm border border-border/60'
                       }`}>
                         {/* Bouncing dots while waiting for first token */}
                         {loading && i === messages.length - 1 && msg.role === 'assistant' && msg.content === '' ? (
@@ -732,14 +732,14 @@ export function AIAssistant() {
                   placeholder={noKey ? 'API key required…' : 'Ask about your taxes…'}
                   rows={1}
                   disabled={loading || noKey}
-                  className="flex-1 resize-none bg-muted/60 border border-border rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-400 placeholder:text-muted-foreground max-h-20 overflow-y-auto disabled:opacity-50"
+                  className="flex-1 resize-none bg-muted/60 border border-border rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1 focus:ring-offset-card placeholder:text-muted-foreground max-h-20 overflow-y-auto disabled:opacity-50"
                   style={{ lineHeight: '1.5' }}
                 />
                 <Button
                   type="submit"
                   size="icon"
                   disabled={!input.trim() || loading || noKey}
-                  className="h-9 w-9 shrink-0 bg-gradient-to-br from-violet-500 to-indigo-600 hover:from-violet-600 hover:to-indigo-700 text-white border-0 disabled:opacity-40"
+                  className="h-9 w-9 shrink-0 gradient-primary text-primary-foreground border-0 shadow-sm hover:brightness-110 active:brightness-95 disabled:opacity-40"
                 >
                   {loading
                     ? <Loader2 className="w-4 h-4 animate-spin" />
