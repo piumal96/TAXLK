@@ -605,12 +605,11 @@ export function AIAssistant() {
 
               {/* Live tax mini-bar */}
               {taxResult && incomeSources.length > 0 && (
-                <div className="shrink-0 mx-3 mt-2 bg-muted/70 border border-border rounded-md px-3 py-2 grid grid-cols-4 gap-1 text-center text-xs">
+                <div className="shrink-0 mx-3 mt-2 bg-muted/70 border border-border rounded-md px-3 py-2 grid grid-cols-3 gap-1 text-center text-xs">
                   {[
                     { label: 'Income',  value: formatCurrency(totalIncome) },
                     { label: 'Tax',     value: formatCurrency(taxResult.totalTax) },
                     { label: 'Payable', value: formatCurrency(balancePayable), red: true },
-                    { label: 'Rate',    value: `${taxResult.effectiveRate.toFixed(1)}%` },
                   ].map((item, i, arr) => (
                     <div key={item.label} className={`flex flex-col ${i < arr.length - 1 ? 'border-r border-border' : ''}`}>
                       <span className="text-muted-foreground text-[10px]">{item.label}</span>
