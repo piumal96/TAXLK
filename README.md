@@ -120,15 +120,24 @@ npm run dev
 ### Environment
 Firebase is configured in `src/lib/firebase.ts`. Update the `firebaseConfig` object with your own Firebase project credentials.
 
+**AI Assistant (OpenRouter):** Copy `.env.example` to `.env` and set `VITE_OPENROUTER_API_KEY` to your [OpenRouter API key](https://openrouter.ai/keys). Vite injects this at **build time** only — there is no separate “submit” step in Firebase for static hosting. Before each production deploy, ensure `.env` exists locally (or export the variable) so `npm run build` includes it:
+
+```bash
+cp .env.example .env
+# edit .env and paste your key
+```
+
 ### Build & Deploy
 
 ```bash
-# Production build
+# Production build (reads VITE_* from .env)
 npm run build
 
 # Deploy to Firebase Hosting + Firestore rules
 firebase deploy
 ```
+
+For CI (e.g. GitHub Actions), store `VITE_OPENROUTER_API_KEY` as a **secret** and set it in the environment before `npm run build`.
 
 ---
 
