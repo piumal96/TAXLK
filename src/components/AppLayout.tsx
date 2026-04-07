@@ -1,4 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { AIAssistant } from '@/components/AIAssistant';
 import { motion } from 'framer-motion';
 import {
   LayoutDashboard,
@@ -10,6 +11,7 @@ import {
   X,
   Shield,
   LogOut,
+  FileText,
 } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -26,6 +28,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     { to: '/app/income', label: 'Income', icon: Wallet },
     { to: '/app/calculator', label: 'Calculator', icon: Calculator },
     { to: '/app/history', label: 'History', icon: History },
+    { to: '/app/tax-return', label: 'File Return', icon: FileText },
     { to: '/app/profile', label: 'Profile', icon: User },
     // Only show Admin link if user has admin role
     ...(user?.role === 'admin' ? [{ to: '/admin', label: 'Admin', icon: Shield }] : []),
@@ -138,6 +141,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 lg:px-8 py-6 lg:py-8">
         {children}
       </main>
+
+      <AIAssistant />
     </div>
   );
 }

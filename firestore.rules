@@ -15,9 +15,10 @@ service cloud.firestore {
       return isAuthenticated() && request.auth.uid == userId;
     }
 
-    // Check if requesting user has admin role (reads from their user document)
+    // Admin = users/{uid}.role == "admin" (document must exist or get() fails the rule)
     function isAdmin() {
       return isAuthenticated() &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
 
@@ -70,10 +71,24 @@ service cloud.firestore {
         (resource.data.user_id == request.auth.uid || isAdmin());
     }
 
-    // ─── User Data Collection ───
-    // Stores app state (income sources, history, profile) per user for cross-browser sync
+    // ─── Tax Profile Collection ───
+    // Extended personal details for tax filing (TIN, NIC, employer, etc.)
+    match /user_profiles/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow write: if isOwner(userId);
+    }
+
+    // ─── Tax workspace (one doc per user) ───
+    // Income sources, calculation history, calculator session — synced across browsers.
+    match /user_tax_workspace/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow write: if isOwner(userId);
+    }
+
+    // ─── User data (primary workspace store) ───
     match /user_data/{userId} {
-      allow read, write: if isOwner(userId);
+      allow read: if isOwner(userId) || isAdmin();
+      allow write: if isOwner(userId);
     }
 
     // ─── App Config Collection (Admin-only) ───
